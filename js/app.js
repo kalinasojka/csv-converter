@@ -7,7 +7,9 @@ let toCSVdrop = document.querySelector("#to_csv_dropdown");
 let tableDiv = document.querySelector("#table");
 
 let table = document.createElement("table");
+let addRowBtn = document.createElement('button');
 let isConverted = false;
+
 
 let inputArr = [];
 
@@ -61,9 +63,13 @@ let convertToTable = function() {
         
     } 
 
-    //STEP 2: convert array into table, function below
+    //STEP 2: convert array into table
     arrayToTable(inputArr); //returns finished <table>
     tableDiv.appendChild(table);
+    //STEP 3: add Row button to listen 
+    tableDiv.appendChild(addRowBtn);
+    addRowBtn.textContent = "Add row...";
+
 }
 
 fromCSVbtn.addEventListener("click", convertToTable); //fromCSVbtn.onclick = convertToTable;
@@ -88,6 +94,9 @@ function arrayToTable(arr) {
             tdInput.setAttribute("value", row[j]);
         }
     }
+    
+
+    
     isConverted = true
     return table;
 }
