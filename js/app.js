@@ -1,7 +1,7 @@
 let fromCSVbtn = document.querySelector("#from_csv_btn");
 let fromCSVdrop = document.querySelector("#from_csv_dropdown");
 
-let userInput = document.querySelector("#user_input");
+let userInput = document.querySelector("#user_input"); //<textarea>
 
 let toCSVbtn = document.querySelector("#to_csv_btn");
 let toCSVdrop = document.querySelector("#to_csv_dropdown");
@@ -10,33 +10,52 @@ let tableDiv = document.querySelector("#table");
 let table = document.createElement("table");
 let addRowBtn = document.createElement('button');
 
+let isConverted = false;
+
 let inputArr = [];
 
 //FROM CSV TO HTML TABLE EVENT LISTENER
-fromCSVbtn.addEventListener("click", convertToTable); //fromCSVbtn.onclick = convertToTable;
+fromCSVbtn.addEventListener("click", convertToTable)
 
-//there is a bug somewhere in the loop, it doesn't add the last row ever
-console.log('my array - lacks last row! ', inputArr);
+//my array
+console.log('my array ', inputArr);
 
 //UPDATE CELL - ONCHANGE LISTENER WITHIN THE <input> ELEMENT
 
 //ADD ROW EVENT LISTENER
 addRowBtn.addEventListener("click", addRow);
 
-//FROM HTML TO CSV TABLE EVENT LISTENER
+//FROM HTML TO CSV TABLE EVENT LISTENER 
+//converts back to string and feeds into the textarea
 toCSVbtn.addEventListener("click", convertToCSV);
 
-//Function to convert input => string => array => table
+//Create table if no table, if there is one then delete it and create new
 function convertToTable() {
+    if (isConverted == true) {
+        //delete table
+        table.removeChild;
+        makeTable();
+    }
+    else{
+        makeTable();
+    }
+}
+
+//Function to convert input => string => array => table
+function makeTable(){
     let userInputStr = userInput.value;
     // STEP 1: create an array
     // separator type: 
     let sep = fromCSVdrop.value;
-    if (sep == ";" ){
+    console.log(`before this mess, sep is: ${sep}`)
+    if (sep == "semicolon" ){
         sep = ";";
-    }else {
+        console.log("going with 1st option")
+    }else if (sep == "coma" ){
         sep = ",";
+        console.log("going with 2nd option")
     }
+
     
     let row = [];
     let word = "";
@@ -49,21 +68,23 @@ function convertToTable() {
         //skip separator and newline
         if (cc == sep) {
             continue
-        }//on newline empty row array to make it ready for the next row
+        }
         else if (cc == "\n") {
             continue
         }//contruct word string
-        else if (cc != sep && nc != sep && nc != "\n"){
+        else if (cc != sep && nc != sep && nc != "\n" && userInputStr.indexOf(cc)!=userInputStr.length-1){ //userInputStr.indexOf(cc)==userInputStr[length-1]
             word += cc;
+            //console.log("word maker in action!", word,"indexOfcc", userInputStr.indexOf(cc), "index of last character", userInputStr.length-1 )
             // console.log('first if', word)
         }//just before sep append the word to the row array and empty the word string
         else if (cc != sep && nc == sep) { 
             word += cc;
             // console.log('second if', word);
             row.push(word);
+            console.log(word);
             word = "";
-        }//just before newline append the word to the row array,empty the word string, append row to inputArr
-        else if (cc != sep && nc == "\n"){
+        }//just before newline append the word to the row array,empty the word string, append row to inputArr, empty row
+        else if (cc != sep && nc == null || cc != sep && nc == "\n" ){  
             word += cc;
             // console.log('third if', word);
             row.push(word);
@@ -79,9 +100,17 @@ function convertToTable() {
     tableDiv.appendChild(table);
     
     //STEP 3: append the addRowbtn
-    tableDiv.appendChild(addRowBtn);
-    addRowBtn.textContent = "Add row...";
+    if (userInput.value == ""){
+        console.log("no input")
+    }else{
+        tableDiv.appendChild(addRowBtn);
+        addRowBtn.textContent = "Add row...";
+    }
+    console.log("at the end of the function ", isConverted);
+    isConverted = true //prohibits repeating table content on each button click
+    
 }
+
 //Function to convert an array into a table
 function arrayToTable(arr) {
     console.log("Running the array to table conversion")
@@ -99,10 +128,9 @@ function arrayToTable(arr) {
             tdInput.setAttribute("value", row[j]); //<input value=>
             tdInput.setAttribute("id", `cell${i}${j}`);
             tdInput.setAttribute("onchange", `updateArray(${i}, ${j}, "cell${i}${j}")`);
-            console.log(tdInput)
+            // console.log(tdInput)
         }
     }
-
 }
 
 //Function to update input in the inputArr - event listener directly inside the element
@@ -141,24 +169,34 @@ function addRow(){
 
         newInputCell.setAttribute("id", `cell${outerIndex}${innerIndex}`);
         newInputCell.setAttribute("onchange", `updateArray(${outerIndex}, ${innerIndex}, "cell${outerIndex}${innerIndex}")`);
-        console.log("brand new cell: ", newInputCell,);
+        // console.log("brand new cell: ", newInputCell,);
     }
     inputArr.push(newSubArray);
     console.log("my array after adding new row and pushing new values: ", inputArr);
 }
 
 //Function to convert back to CSV and overwrite in the textarea
-
 //include \n characters!!
 function convertToCSV() {
     let sep = toCSVdrop.value;
-    //THIS ONLY ADDS SUBARRAYS WITH SPECIFIED SEP   
-    if (sep == "SEMICOLON"){
+
+    if (sep == "semicolon"){
         sep = ";";
-    }else if (sep == "COMA"){
+    }else if (sep == "coma"){
         sep = ",";
     }
-
-    let myNewString = inputArr.join("&&&");
+    for (i = 0; i < inputArr.length; i++){
+        //index of the last thing in a subarray in order to add newline to it:
+        let x = inputArr[i].length // 3
+        let y = x-1 //2
+        inputArr[i][y] = inputArr[i][y] + "\n"
+        console.log(inputArr[i][y])
+        //join the subarrays with sep as well
+        console.log("inputArr[i] is... ", inputArr[i]);
+        inputArr[i] = inputArr[i].join(sep);
+    }
+    let myNewString = inputArr.join(sep);
     console.log("This is my new string: ", myNewString);
+    //feed the new string into the <textarea>
+    userInput.value = myNewString;
 }
