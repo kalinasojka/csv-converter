@@ -1,15 +1,14 @@
 let fromCSVbtn = document.querySelector("#from_csv_btn");
 let fromCSVdrop = document.querySelector("#from_csv_dropdown");
+
 let userInput = document.querySelector("#user_input");
 
 let toCSVbtn = document.querySelector("#to_csv_btn");
 let toCSVdrop = document.querySelector("#to_csv_dropdown");
-let tableDiv = document.querySelector("#table");
 
+let tableDiv = document.querySelector("#table");
 let table = document.createElement("table");
 let addRowBtn = document.createElement('button');
-let isConverted = false;
-
 
 let inputArr = [];
 
@@ -25,24 +24,22 @@ console.log('my array - lacks last row! ', inputArr);
 addRowBtn.addEventListener("click", addRow);
 
 //FROM HTML TO CSV TABLE EVENT LISTENER
-// toCSVbtn.addEventListener("click", convertToCSV);
+toCSVbtn.addEventListener("click", convertToCSV);
 
 //Function to convert input => string => array => table
 function convertToTable() {
     let userInputStr = userInput.value;
     // STEP 1: create an array
-
     // separator type: 
     let sep = fromCSVdrop.value;
-    if (sep == ";"){
+    if (sep == ";" ){
         sep = ";";
-    }else if (sep == ","){
+    }else {
         sep = ",";
     }
     
     let row = [];
     let word = "";
-
     //Loop through the string to make an array
     //cc=current character, nc=next character
     for (let i = 0; i < userInputStr.length; i++){ 
@@ -76,7 +73,6 @@ function convertToTable() {
         }
         
     } 
-
     //STEP 2: convert array into table
     console.log("Launching array to table conversion function");
     arrayToTable(inputArr); //creates elements <table><tr><td><input></</</> from array
@@ -85,9 +81,7 @@ function convertToTable() {
     //STEP 3: append the addRowbtn
     tableDiv.appendChild(addRowBtn);
     addRowBtn.textContent = "Add row...";
-
 }
-
 //Function to convert an array into a table
 function arrayToTable(arr) {
     console.log("Running the array to table conversion")
@@ -108,8 +102,6 @@ function arrayToTable(arr) {
             console.log(tdInput)
         }
     }
-    isConverted = true //when this is true event listener listence for change in cells
-    // return table;
 
 }
 
@@ -126,14 +118,14 @@ function updateArray(i, j, id){
     inputArr[i][j] = currValue;
     console.log("New input value in the array is: ", inputArr[i][j]);
     console.log("After changes the array looks like this: ", inputArr)
-       
+
 }
 
 //Function to convert an array into a table
 function addRow(){ 
     let newRow = document.createElement("tr");
     let newSubArray = [];
-    
+
     table.appendChild(newRow);
     // console.log(inputArr[0].length);
     for (i = 0; i < inputArr[0].length; i++){
@@ -142,11 +134,11 @@ function addRow(){
         //specify the indices for new elements:
         let innerIndex = i
         let outerIndex = inputArr.length;
-        
+
         newRow.appendChild(newCell);
         newCell.appendChild(newInputCell);
         newSubArray.push(newInputCell.value);
-        
+
         newInputCell.setAttribute("id", `cell${outerIndex}${innerIndex}`);
         newInputCell.setAttribute("onchange", `updateArray(${outerIndex}, ${innerIndex}, "cell${outerIndex}${innerIndex}")`);
         console.log("brand new cell: ", newInputCell,);
@@ -156,15 +148,17 @@ function addRow(){
 }
 
 //Function to convert back to CSV and overwrite in the textarea
-//include \n characters!!
-// function convertToCSV() {
-//     let sep = toCSVdrop.value;
-//     if (sep == "SEMICOLON"){
-//         sep = ";";
-//     }else if (sep == "COMA"){
-//         sep = ",";
-//     }
-//     let myNewString = inputArr.join(sep);
-//     console.log(myNewString);
-// }
 
+//include \n characters!!
+function convertToCSV() {
+    let sep = toCSVdrop.value;
+    //THIS ONLY ADDS SUBARRAYS WITH SPECIFIED SEP   
+    if (sep == "SEMICOLON"){
+        sep = ";";
+    }else if (sep == "COMA"){
+        sep = ",";
+    }
+
+    let myNewString = inputArr.join("&&&");
+    console.log("This is my new string: ", myNewString);
+}
