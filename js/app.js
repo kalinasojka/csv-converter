@@ -17,7 +17,12 @@ let inputArr = [];
 fromCSVbtn.addEventListener("click", convertToTable); //fromCSVbtn.onclick = convertToTable;
 
 //there is a bug somewhere in the loop, it doesn't add the last row ever
-console.log('my array - lacks last row! ', inputArr)
+console.log('my array - lacks last row! ', inputArr);
+
+//UPDATE CELL - ONCHANGE LISTENER WITHIN THE <input> ELEMENT
+
+//ADD ROW EVENT LISTENER
+addRowBtn.addEventListener("click", addRow);
 
 //FROM HTML TO CSV TABLE EVENT LISTENER
 toCSVbtn.addEventListener("click", convertToCSV);
@@ -88,16 +93,16 @@ function arrayToTable(arr) {
     console.log("Running the array to table conversion")
     //Loop though each element of the main array to create a row
     for (let i = 0; i < arr.length; i++){
-        let htmlRow = document.createElement('tr');
+        let htmlRow = document.createElement("tr");
         table.appendChild(htmlRow);
         let row = arr[i];
         //Loop through each element of subarray to create cells
         for (let j = 0; j < row.length; j++) {
             let td = document.createElement("td");
             htmlRow.appendChild(td);
-            let tdInput = document.createElement('input');
+            let tdInput = document.createElement("input");
             td.appendChild(tdInput); //<input>
-            tdInput.setAttribute("value", row[j]); //<input value=></input>
+            tdInput.setAttribute("value", row[j]); //<input value=>
             tdInput.setAttribute("id", `cell${i}${j}`);
             tdInput.setAttribute("onchange", `updateArray(${i}, ${j}, "cell${i}${j}")`);
             console.log(tdInput)
@@ -123,7 +128,43 @@ function updateArray(i, j, id){
        
 }
 
+function addRow(){ //[lala, blabla, gaga] <tr><td><td><td></tr>
+    let newRow = document.createElement("tr");
+    let newSubArray = [];
+    
+    table.appendChild(newRow);
+    // console.log(inputArr[0].length);
+    for (i = 0; i < inputArr[0].length; i++){
+        let newCell = document.createElement("td");
+        let newInputCell = document.createElement("input");
+        newRow.appendChild(newCell);
+        newCell.appendChild(newInputCell);
+        console.log("brand new cell: ", newInputCell,);
+        //last thing has and index of array.length - 1
+        let inputArrLength = inputArr.length;
+        let myIndex = inputArrLength - 1; //inputArr[2] 
+        let thatArrayLength = inputArr[myIndex].length;
+        let lastThingInThatArrayIndex = thatArrayLength - 1;
+        //console.log(myIndex); //myIndex = 2
+        //console.log(lastThingInThatArrayIndex);
+        // let lastThingIndex = inputArr[myIndex][lastThingInThatArrayIndex]
+        newSubArray.push(newInputCell.value);
+    }
+    inputArr.push(newSubArray); //fresh new row index
+    console.log("my array after adding new row and pushing new values: ", inputArr);
+    // console.log(newRow.length)
+    // for (j = 0; j < )
+    //do I need to specify the value??
+    // tdInput.setAttribute("value", row[j]); //<input value="">
+        
+    //locate the index of the new cells:
+    // let rowIndex = inputArr[]
+    // tdInput.setAttribute("id", `cell${i}${j}`);
+    // tdInput.setAttribute("onchange", `updateArray(${i}, ${j}, "cell${i}${j}")`);
+}
+
 //Function to convert back to CSV and overwrite in the textarea
+//include \n characters!!
 function convertToCSV() {
     let myNewString = inputArr.join(";");
     console.log(myNewString);
