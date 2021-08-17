@@ -113,22 +113,24 @@ function arrayToTable(arr) {
 
 }
 
-//UPDATE input in the inputArr - event listener directly inside the element
+//Function to update input in the inputArr - event listener directly inside the element
 //<input value="Period" id="cell00" onchange="updateArray(0, 0, &quot;cell00&quot;)">
 function updateArray(i, j, id){
     //alert("you changed a cell, good for you!")
     let myCell = document.getElementById(id); //`${id}`
-    console.log('Changes applied to cell id: ', myCell);
-    console.log('Array input value before change is ', inputArr[i][j])
+    console.log("Changes applied to cell id: ", myCell);
+    console.log("Array input value before change is ", inputArr[i][j])
     let defValue = myCell.defaultValue; //inputArr[0][0] = 
     let currValue = myCell.value;
     console.log(`Default value was: ${defValue} and current value is: ${currValue}`)
     inputArr[i][j] = currValue;
-    console.log('New input value in the array is: ', inputArr[i][j]);
+    console.log("New input value in the array is: ", inputArr[i][j]);
+    console.log("After changes the array looks like this: ", inputArr)
        
 }
 
-function addRow(){ //[lala, blabla, gaga] <tr><td><td><td></tr>
+//Function to convert an array into a table
+function addRow(){ 
     let newRow = document.createElement("tr");
     let newSubArray = [];
     
@@ -137,30 +139,20 @@ function addRow(){ //[lala, blabla, gaga] <tr><td><td><td></tr>
     for (i = 0; i < inputArr[0].length; i++){
         let newCell = document.createElement("td");
         let newInputCell = document.createElement("input");
+        //specify the indices for new elements:
+        let innerIndex = i
+        let outerIndex = inputArr.length;
+        
         newRow.appendChild(newCell);
         newCell.appendChild(newInputCell);
-        console.log("brand new cell: ", newInputCell,);
-        //last thing has and index of array.length - 1
-        let inputArrLength = inputArr.length;
-        let myIndex = inputArrLength - 1; //inputArr[2] 
-        let thatArrayLength = inputArr[myIndex].length;
-        let lastThingInThatArrayIndex = thatArrayLength - 1;
-        //console.log(myIndex); //myIndex = 2
-        //console.log(lastThingInThatArrayIndex);
-        // let lastThingIndex = inputArr[myIndex][lastThingInThatArrayIndex]
         newSubArray.push(newInputCell.value);
-    }
-    inputArr.push(newSubArray); //fresh new row index
-    console.log("my array after adding new row and pushing new values: ", inputArr);
-    // console.log(newRow.length)
-    // for (j = 0; j < )
-    //do I need to specify the value??
-    // tdInput.setAttribute("value", row[j]); //<input value="">
         
-    //locate the index of the new cells:
-    // let rowIndex = inputArr[]
-    // tdInput.setAttribute("id", `cell${i}${j}`);
-    // tdInput.setAttribute("onchange", `updateArray(${i}, ${j}, "cell${i}${j}")`);
+        newInputCell.setAttribute("id", `cell${outerIndex}${innerIndex}`);
+        newInputCell.setAttribute("onchange", `updateArray(${outerIndex}, ${innerIndex}, "cell${outerIndex}${innerIndex}")`);
+        console.log("brand new cell: ", newInputCell,);
+    }
+    inputArr.push(newSubArray);
+    console.log("my array after adding new row and pushing new values: ", inputArr);
 }
 
 //Function to convert back to CSV and overwrite in the textarea
