@@ -13,8 +13,17 @@ let isConverted = false;
 
 let inputArr = [];
 
+//FROM CSV TO HTML TABLE EVENT LISTENER
+fromCSVbtn.addEventListener("click", convertToTable); //fromCSVbtn.onclick = convertToTable;
+
+//there is a bug somewhere in the loop, it doesn't add the last row ever
+console.log('my array - lacks last row! ', inputArr)
+
+//FROM HTML TO CSV TABLE EVENT LISTENER
+toCSVbtn.addEventListener("click", convertToCSV);
+
 //Function to convert input => string => array => table
-let convertToTable = function() {
+function convertToTable() {
     let userInputStr = userInput.value;
     // STEP 1: create an array
 
@@ -64,18 +73,15 @@ let convertToTable = function() {
     } 
 
     //STEP 2: convert array into table
-    arrayToTable(inputArr); //returns finished <table>
+    console.log("Launching array to table conversion function");
+    arrayToTable(inputArr); //creates elements <table><tr><td><input></</</> from array
     tableDiv.appendChild(table);
-    //STEP 3: add Row button to listen 
+    
+    //STEP 3: append the addRowbtn
     tableDiv.appendChild(addRowBtn);
     addRowBtn.textContent = "Add row...";
 
 }
-
-fromCSVbtn.addEventListener("click", convertToTable); //fromCSVbtn.onclick = convertToTable;
-
-//there is a bug somewhere in the loop, it doesn't add the last row ever
-console.log('my array', inputArr)
 
 //Function to convert an array into a table
 function arrayToTable(arr) {
@@ -90,27 +96,36 @@ function arrayToTable(arr) {
             let td = document.createElement("td");
             htmlRow.appendChild(td);
             let tdInput = document.createElement('input');
-            td.appendChild(tdInput);
-            tdInput.setAttribute("value", row[j]);
+            td.appendChild(tdInput); //<input>
+            tdInput.setAttribute("value", row[j]); //<input value=></input>
+            tdInput.setAttribute("id", `cell${i}${j}`);
+            tdInput.setAttribute("onchange", `updateArray(${i}, ${j}, "cell${i}${j}")`);
+            console.log(tdInput)
         }
     }
-    
+    isConverted = true //when this is true event listener listence for change in cells
+    // return table;
 
-    
-    isConverted = true
-    return table;
 }
 
-// let cont = cell.textContent;
-// console.log(cont)
+//UPDATE input in the inputArr - event listener directly inside the element
+//<input value="Period" id="cell00" onchange="updateArray(0, 0, &quot;cell00&quot;)">
+function updateArray(i, j, id){
+    //alert("you changed a cell, good for you!")
+    let myCell = document.getElementById(id); //`${id}`
+    console.log('Changes applied to cell id: ', myCell);
+    console.log('Array input value before change is ', inputArr[i][j])
+    let defValue = myCell.defaultValue; //inputArr[0][0] = 
+    let currValue = myCell.value;
+    console.log(`Default value was: ${defValue} and current value is: ${currValue}`)
+    inputArr[i][j] = currValue;
+    console.log('New input value in the array is: ', inputArr[i][j]);
+       
+}
 
-//If the table is finished, 
-// listen for changes in cells and new rows 
-// to update the table
-// if (isConverted == true) {
-//     //table.addEventListener
-//     // some kind of loop? 
-//         let cell = document.querySelector("td")
-//         let content = cell.textContent;
-//         content.
-// }
+//Function to convert back to CSV and overwrite in the textarea
+function convertToCSV() {
+    let myNewString = inputArr.join(";");
+    console.log(myNewString);
+}
+
