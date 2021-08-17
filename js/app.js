@@ -25,7 +25,7 @@ console.log('my array - lacks last row! ', inputArr);
 addRowBtn.addEventListener("click", addRow);
 
 //FROM HTML TO CSV TABLE EVENT LISTENER
-toCSVbtn.addEventListener("click", convertToCSV);
+// toCSVbtn.addEventListener("click", convertToCSV);
 
 //Function to convert input => string => array => table
 function convertToTable() {
@@ -34,9 +34,9 @@ function convertToTable() {
 
     // separator type: 
     let sep = fromCSVdrop.value;
-    if (sep == ";" ){
+    if (sep == ";"){
         sep = ";";
-    }else {
+    }else if (sep == ","){
         sep = ",";
     }
     
@@ -157,8 +157,14 @@ function addRow(){
 
 //Function to convert back to CSV and overwrite in the textarea
 //include \n characters!!
-function convertToCSV() {
-    let myNewString = inputArr.join(";");
-    console.log(myNewString);
-}
+// function convertToCSV() {
+//     let sep = toCSVdrop.value;
+//     if (sep == "SEMICOLON"){
+//         sep = ";";
+//     }else if (sep == "COMA"){
+//         sep = ",";
+//     }
+//     let myNewString = inputArr.join(sep);
+//     console.log(myNewString);
+// }
 
