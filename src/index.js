@@ -6,11 +6,13 @@ let userInput = document.querySelector("#user_input"); //<textarea>
 let toCSVbtn = document.querySelector("#to_csv_btn");
 let toCSVdrop = document.querySelector("#to_csv_dropdown");
 
-let tableDiv = document.querySelector("#table");
+let tableDiv = document.querySelector("#table-div");
 let table = document.createElement("table");
+tableDiv.appendChild(table);
+// let table = document.querySelector("table");
 let addRowBtn = document.createElement('button');
 
-let isConverted = false;
+// let isConverted = false;
 
 let inputArr = [];
 
@@ -31,29 +33,54 @@ toCSVbtn.addEventListener("click", convertToCSV);
 
 //Create table if no table, if there is one then delete it and create new
 function convertToTable() {
-    if (isConverted == true) {
-        //delete table
-        table.removeChild;
-        makeTable();
+    //delete table if exists
+    // let table = document.querySelector("table");
+    // console.log("line 36", table)
+    table.remove();
+    table = document.createElement("table");
+    tableDiv.appendChild(table);
+    
+    // try {
+    //     table.remove();
+    //     console.log(table)
+    // }catch (e) {
+    //     if (e instanceof TypeError) {
+    //       console.log("just a TypeErrror, nothing new")
+    //     } else {
+    //       throw e; 
+    //     }
+    // }
+    
+    if(!table){
+        //#table element DOES NOT exist
+        // table = document.createElement("table");
+        // tableDiv.appendChild(table);
+        // table.setAttribute("id", "my-table")
+        console.log("table element DOES NOT exist, creating <table>");
     }
     else{
-        makeTable();
+        //#table element DOES exists
+        // x = document.getElementById("my-table");
+        // x.remove(); //wont work dont know why
+        // tableDiv.empty(); //doesnt work either
+        // table.parentNode
+        // tableDiv.innerHTML("");
+        //console.log("this", this);
+        //console.log("removed?", table);
+        // table = document.createElement("table");
+        console.log("table element DOES exist, emptying inputArr");
+        inputArr=[];
     }
-}
-
-//Function to convert input => string => array => table
-function makeTable(){
+    console.log("Starting the conversion, do I have the right <table>? ", table);
+    // table = document.createElement("table");
     let userInputStr = userInput.value;
     // STEP 1: create an array
     // separator type: 
     let sep = fromCSVdrop.value;
-    console.log(`before this mess, sep is: ${sep}`)
     if (sep == "semicolon" ){
         sep = ";";
-        console.log("going with 1st option")
     }else if (sep == "coma" ){
         sep = ",";
-        console.log("going with 2nd option")
     }
 
     
@@ -81,7 +108,6 @@ function makeTable(){
             word += cc;
             // console.log('second if', word);
             row.push(word);
-            console.log(word);
             word = "";
         }//just before newline append the word to the row array,empty the word string, append row to inputArr, empty row
         else if (cc != sep && nc == null || cc != sep && nc == "\n" ){  
@@ -96,8 +122,9 @@ function makeTable(){
     } 
     //STEP 2: convert array into table
     console.log("Launching array to table conversion function");
+    // tableDiv.appendChild(table);
     arrayToTable(inputArr); //creates elements <table><tr><td><input></</</> from array
-    tableDiv.appendChild(table);
+    
     
     //STEP 3: append the addRowbtn
     if (userInput.value == ""){
@@ -106,13 +133,15 @@ function makeTable(){
         tableDiv.appendChild(addRowBtn);
         addRowBtn.textContent = "Add row...";
     }
-    console.log("at the end of the function ", isConverted);
-    isConverted = true //prohibits repeating table content on each button click
+    // console.log("at the end of the function isConverted=", isConverted);
+    // isConverted = true //prohibits repeating table content on each button click
     
 }
 
 //Function to convert an array into a table
 function arrayToTable(arr) {
+    // table = document.querySelector("table");
+    console.log("inside arrayToTable, do we have it?", table);
     console.log("Running the array to table conversion")
     //Loop though each element of the main array to create a row
     for (let i = 0; i < arr.length; i++){
@@ -133,6 +162,11 @@ function arrayToTable(arr) {
     }
 }
 
+//Function to convert input => string => array => table
+function makeTable(){
+    
+}
+
 //Function to update input in the inputArr - event listener directly inside the element
 //<input value="Period" id="cell00" onchange="updateArray(0, 0, &quot;cell00&quot;)">
 function updateArray(i, j, id){
@@ -149,11 +183,11 @@ function updateArray(i, j, id){
 
 }
 
-//Function to convert an array into a table
+//Function to add new rows
 function addRow(){ 
     let newRow = document.createElement("tr");
     let newSubArray = [];
-
+    // table = document.querySelector("table");
     table.appendChild(newRow);
     // console.log(inputArr[0].length);
     for (i = 0; i < inputArr[0].length; i++){
@@ -178,6 +212,7 @@ function addRow(){
 //Function to convert back to CSV and overwrite in the textarea
 //include \n characters!!
 function convertToCSV() {
+    console.log("im removing the table! is it working?", tableDiv)
     let sep = toCSVdrop.value;
 
     if (sep == "semicolon"){
@@ -193,10 +228,21 @@ function convertToCSV() {
         console.log(inputArr[i][y])
         //join the subarrays with sep as well
         console.log("inputArr[i] is... ", inputArr[i]);
-        inputArr[i] = inputArr[i].join(sep);
+        //try catch here if inputArr is array
+        //if inputArr[i] is an array
+        try {
+            inputArr[i] = inputArr[i].join(sep);
+        }catch (e) {
+            if (e instanceof TypeError) {
+              console.log("Already transformed!")
+            } else {
+              throw e; 
+            }
+        }
     }
     let myNewString = inputArr.join(sep);
     console.log("This is my new string: ", myNewString);
     //feed the new string into the <textarea>
     userInput.value = myNewString;
+    // table.remove();
 }

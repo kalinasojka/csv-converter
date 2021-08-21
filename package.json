@@ -1,0 +1,30 @@
+{
+  "name": "csv-converter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch",
+    "start": "webpack serve --open",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalinasojka/csv-converter.git"
+  },
+  "author": "kalina.a.sojka@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kalinasojka/csv-converter/issues"
+  },
+  "homepage": "https://github.com/kalinasojka/csv-converter#readme",
+  "devDependencies": {
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.0.0"
+  },
+  "dependencies": {
+    "lit": "^2.0.0-rc.3"
+  }
+}
