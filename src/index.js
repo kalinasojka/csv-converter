@@ -12,6 +12,8 @@ class MyElement extends LitElement {
           };
     }
 
+    
+
     //SELECTORS:
 
     get fromCSVdrop() {
@@ -32,6 +34,7 @@ class MyElement extends LitElement {
     constructor() {
         super();
         this.inputArr = [];
+        this.btn;
       }
 
 
@@ -60,6 +63,7 @@ class MyElement extends LitElement {
                     </select>
                 </div>
                 <table>${this.inputArr.map(row => html`<tr>${row.map(cell => html`<td><input value=${cell}></td>`)}</tr>`)}</table>
+                ${this.addRowBtn()}
             </div>
         </div>
         `;
@@ -100,7 +104,14 @@ class MyElement extends LitElement {
                 row = [];
             }
             
-        } 
+        }
+        
+    }
+
+    addRowBtn() {
+        if (this.inputArr.length != 0){
+            return html`<button>Add row...</button>`;
+        }
     }
 
 
