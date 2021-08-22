@@ -55,7 +55,7 @@ class MyElement extends LitElement {
 
             <div class="right">
                 <div class="options_right">
-                    <button id="to_csv_btn"><< Transform back to CSV</button>
+                    <button ${this.convertToCSV} id="to_csv_btn"><< Transform back to CSV</button>
                     <label for="to_csv_dropdown">Separator:</label>
                     <select id="to_csv_dropdown">
                         <option value=",">COMA</option>
@@ -68,11 +68,11 @@ class MyElement extends LitElement {
         </div>
         `;
     }
-    // 
-    //FUNCTIONS:
+
+    //Function to convert input from textarea into an array
     convertToHTML() {
         // if (this.userInput.value != ""){}
-
+        this.requestUpdate();
         //empty the array
         this.inputArr = [];
         
@@ -108,10 +108,22 @@ class MyElement extends LitElement {
         
     }
 
+    //Function to add an 'add row' button when table is present
     addRowBtn() {
         if (this.inputArr.length != 0){
-            return html`<button>Add row...</button>`;
+            return html`<button @click=${this.addRow}>Add row...</button>`;
         }
+    }
+
+    //Function to add new row
+    addRow() {
+        this.requestUpdate();
+        let newSubArray = [];
+        
+        for (let i = 0; i < this.inputArr[0].length; i++){ //inputArr[0].length - number of columns in the table
+            newSubArray.push("");
+        }
+        this.inputArr.push(newSubArray);
     }
 
 
