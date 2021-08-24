@@ -3,19 +3,32 @@ import {LitElement, html, css} from 'lit';
 class MyElement extends LitElement {
     static get styles() {
         return css`
+        * {
+            font-family: Helvetica, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            justify-items: space-around;
+            flex-wrap: wrap;
+        }
+
+        .top-elements {
+            margin-bottom: 5px;
+        }
+
+        #add-row-btn {
+            margin-left: 5px;
+        }
         `;
     }
-
     static get properties() {
         return {
             inputArr: {type: Array},
           };
     }
 
-    
-
     //SELECTORS:
-
     get fromCSVdrop() {
         return this.renderRoot.querySelector("#from_csv_dropdown");
     }
@@ -25,16 +38,13 @@ class MyElement extends LitElement {
     get toCSVdrop() {
         return this.renderRoot.querySelector("#to_csv_dropdown");
     }
-    get table() {
-        return this.renderRoot.querySelector("table");
-    }
-    // // get addRowBtn() {
-    // //     return this.renderRoot.querySelector("#");
-    // // }
+    get inputCell() {
+        return this.renderRoot.querySelectorAll(".input-cell");
+      }
+
     constructor() {
         super();
         this.inputArr = [];
-        this.btn;
       }
 
 
@@ -43,9 +53,9 @@ class MyElement extends LitElement {
         <div class="container">
             <div class="left">
                 <div class="options_left">
-                    <button @click=${this.convertToHTML} id="to_html_btn">Transform to HTML >></button>
+                    <button @click=${this.convertToHTML} class="top-elements">Transform to HTML >></button>
                     <label for="from_csv_dropdown">Separator:</label>
-                    <select id="from_csv_dropdown">
+                    <select id="from_csv_dropdown" class="top-elements">
                         <option value=",">COMA</option>
                         <option value=";">SEMICOLON</option>
                     </select>
@@ -55,14 +65,20 @@ class MyElement extends LitElement {
 
             <div class="right">
                 <div class="options_right">
-                    <button ${this.convertToCSV} id="to_csv_btn"><< Transform back to CSV</button>
+                    <button @click="${this.convertToCSV}" class="top-elements"><< Transform back to CSV</button>
                     <label for="to_csv_dropdown">Separator:</label>
-                    <select id="to_csv_dropdown">
+                    <select id="to_csv_dropdown" class="top-elements">
                         <option value=",">COMA</option>
                         <option value=";">SEMICOLON</option>
                     </select>
                 </div>
-                <table>${this.inputArr.map(row => html`<tr>${row.map(cell => html`<td><input value=${cell}></td>`)}</tr>`)}</table>
+                <table>${this.inputArr.map(i => 
+                    html`<tr class="table-row">${i.map(j => 
+                        html`<td> 
+                        <input value=${j} class="input-cell">
+                        </td>`)}
+                        </tr>`)}
+                </table>
                 ${this.addRowBtn()}
             </div>
         </div>
@@ -71,12 +87,11 @@ class MyElement extends LitElement {
 
     //Function to convert input from textarea into an array
     convertToHTML() {
-        // if (this.userInput.value != ""){}
-        this.requestUpdate();
-        //empty the array
+       //empty the array
         this.inputArr = [];
-        
-        let userInputStr = this.userInput.value;
+        let userInputStr = "";
+        this.requestUpdate();
+        userInputStr = this.userInput.value;
         let row = [];
         let word = "";
         let sep = this.fromCSVdrop.value;
@@ -88,7 +103,7 @@ class MyElement extends LitElement {
             if (cc == sep || cc == "\n") {
                 continue
             }//contruct word string
-            else if (cc != sep && nc != sep && nc != "\n" && userInputStr.indexOf(cc)!=userInputStr.length-1){ //userInputStr.indexOf(cc)==userInputStr[length-1]
+            else if (cc != sep && nc != sep && nc != "\n" && i != userInputStr.length-1){ 
                 word += cc;
             }//just before sep append the word to the row array and empty the word string
             else if (cc != sep && nc == sep) { 
@@ -96,7 +111,7 @@ class MyElement extends LitElement {
                 row.push(word);
                 word = "";
             }//just before newline append the word to the row array,empty the word string, append row to inputArr, empty row
-            else if (cc != sep && nc == null || cc != sep && nc == "\n" ){  
+            else if (cc != sep && nc ==null|| cc != sep && nc == "\n"){  
                 word += cc;
                 row.push(word);
                 word = "";
@@ -111,7 +126,7 @@ class MyElement extends LitElement {
     //Function to add an 'add row' button when table is present
     addRowBtn() {
         if (this.inputArr.length != 0){
-            return html`<button @click=${this.addRow}>Add row...</button>`;
+            return html`<button @click=${this.addRow} id="add-row-btn">Add row...</button>`;
         }
     }
 
@@ -126,6 +141,29 @@ class MyElement extends LitElement {
         this.inputArr.push(newSubArray);
     }
 
+    convertToCSV() {
+        // this.requestUpdate();
+        let rows = this.inputArr.length; //17
+        let cols = this.inputArr[0].length;//3
+        this.userInput.value = "";
+        let bigArray = [];
+        let tempArray=[];
+        let sep = this.toCSVdrop.value;
+        let c = 0 //counter
+        for (let i=0; i<rows; i++){
+            
+            for (let j=0; j<cols; j++){
+                tempArray.push(this.inputCell[c].value);
+                c++;
+            }
+            let substring = tempArray.join(sep) //
+            bigArray.push(substring);
+            tempArray=[];
+
+        }
+        let outputStr = bigArray.join("\n");
+        this.userInput.value = outputStr;
+    }
 
 }
 
