@@ -87,10 +87,10 @@ class MyElement extends LitElement {
 
     //Function to convert input from textarea into an array
     convertToHTML() {
-       //empty the array
+       
+        //empty the array
         this.inputArr = [];
         let userInputStr = "";
-        this.requestUpdate();
         userInputStr = this.userInput.value;
         let row = [];
         let word = "";
@@ -134,15 +134,17 @@ class MyElement extends LitElement {
     addRow() {
         this.requestUpdate();
         let newSubArray = [];
-        
-        for (let i = 0; i < this.inputArr[0].length; i++){ //inputArr[0].length - number of columns in the table
+        //inputArr[0].length - number of columns in the table
+        for (let i = 0; i < this.inputArr[0].length; i++){ 
             newSubArray.push("");
         }
         this.inputArr.push(newSubArray);
     }
 
+    //Funtion to convert values from input fields into an array, 
+    //convert the array to string with separators and newlines,
+    //assign the value of string back to userInput textarea.
     convertToCSV() {
-        // this.requestUpdate();
         let rows = this.inputArr.length; //17
         let cols = this.inputArr[0].length;//3
         this.userInput.value = "";
