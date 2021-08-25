@@ -87,7 +87,7 @@ class MyElement extends LitElement {
 
     //Function to convert input from textarea into an array
     convertToHTML() {
-       console.log()
+       console.log("new version")
         //empty the array
         this.inputArr = [];
         let userInputStr = "";
