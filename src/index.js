@@ -53,7 +53,7 @@ class MyElement extends LitElement {
         <div class="container">
             <div class="left">
                 <div class="options_left">
-                    <button @click=${this.convertToHTML} class="top-elements">Transform to HTML >></button>
+                    <button @click=${this.convertToHTML} class="top-elements">lololoTransform to HTML >></button>
                     <label for="from_csv_dropdown">Separator:</label>
                     <select id="from_csv_dropdown" class="top-elements">
                         <option value=",">COMA</option>
@@ -87,7 +87,7 @@ class MyElement extends LitElement {
 
     //Function to convert input from textarea into an array
     convertToHTML() {
-       
+       console.log("dijbdkjqkqskj")
         //empty the array
         this.inputArr = [];
         let userInputStr = "";
@@ -99,30 +99,52 @@ class MyElement extends LitElement {
         for (let i = 0; i < userInputStr.length; i++){ 
             let cc = userInputStr[i];  
             let nc = userInputStr[i+1];
-            //skip separator and newline
-            if (cc == sep || cc == "\n") {
-                continue
-            }//contruct word string
-            else if (cc != sep && nc != sep && nc != "\n" && i != userInputStr.length-1){ 
-                word += cc;
-            }//just before sep append the word to the row array and empty the word string
-            else if (cc != sep && nc == sep) { 
-                word += cc;
+            //separately take care of the last character in case its row is shorter and there is no newline at the end:
+            //construct the word, push it to row subarray, push row into the main input array
+            if (i == userInputStr.length-1){
+                word +=cc;
                 row.push(word);
-                word = "";
-            }//just before newline append the word to the row array,empty the word string, append row to inputArr, empty row
-            else if (cc != sep && nc ==null|| cc != sep && nc == "\n"){  
-                word += cc;
-                row.push(word);
-                word = "";
-                this.inputArr.push(row);
-                row = [];
+                if (row.length==this.inputArr[0].length){
+                    this.inputArr.push(row);
+                    word="";
+                    row = [];
+                }
+                else if (row.length<this.inputArr[0].length){
+                    for (i = 0; i < (this.inputArr[0].length - row.length); i++){
+                        word = "";
+                        row.push(word);
+                    }
+                    this.inputArr.push(row);
+                    row = [];
+                }
             }
-            
+            //Push row subarray at each newline, 
+            //take care of shorter rows to create empty input cells later (doesn't work, don't know why)
+            else if (cc == "\n" || (cc == sep && nc == "\n")) { 
+                if (row.length==this.inputArr[0].length){
+                    this.inputArr.push(row);
+                    row = [];
+                }
+                else if (row.length<this.inputArr[0].length){
+                    for (i = 0; i < (this.inputArr[0].length - row.length); i++){
+                        word = "";
+                        row.push(word);
+                    }
+                    this.inputArr.push(row);
+                    row = [];
+                }
+            }//at the end of a word, before newline or sep
+            else if (cc != sep && cc !="\n" && (nc == sep || nc == "\n")){
+                word += cc;
+                row.push(word);
+                word = "";
+            }//in the middle of a word
+            else if (cc != sep && nc != sep){
+                word += cc;
+            }
         }
-        
     }
-
+    
     //Function to add an 'add row' button when table is present
     addRowBtn() {
         if (this.inputArr.length != 0){
