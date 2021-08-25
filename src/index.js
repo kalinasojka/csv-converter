@@ -87,7 +87,7 @@ class MyElement extends LitElement {
 
     //Function to convert input from textarea into an array
     convertToHTML() {
-       console.log("new version")
+       console.log("CSV to HTML conversion...")
         //empty the array
         this.inputArr = [];
         let userInputStr = "";
@@ -99,9 +99,10 @@ class MyElement extends LitElement {
         for (let i = 0; i < userInputStr.length; i++){ 
             let cc = userInputStr[i];  
             let nc = userInputStr[i+1];
-            if (cc == "\n") { 
-                    continue
-                }//contruct word string
+            //skip separator and newline
+            if (cc == sep || cc == "\n") {
+                continue
+            }//contruct word string
             else if (cc != sep && nc != sep && nc != "\n" && i != userInputStr.length-1){ 
                 word += cc;
             }//just before sep append the word to the row array and empty the word string
@@ -109,31 +110,15 @@ class MyElement extends LitElement {
                 word += cc;
                 row.push(word);
                 word = "";
-            }
-            else if (cc == sep && nc == sep){
-                word = "";
-                row.push(word);
             }//just before newline append the word to the row array,empty the word string, append row to inputArr, empty row
-            else if (cc != sep && nc ==null|| cc != sep && nc == "\n" || cc== sep && nc == "\n"){ 
-                word += cc; 
+            else if (cc != sep && nc ==null|| cc != sep && nc == "\n"){  
+                word += cc;
                 row.push(word);
-                if (row.length==this.inputArr[0].length){
-                    word = "";
-                    this.inputArr.push(row);
-                    row = [];
-                }
-                else if (row.length<this.inputArr[0].length){
-                    for (i = 0; i < (this.inputArr[0].length - row.length); i++){
-                        word = "";
-                        row.push(word);
-                    }
-                    this.inputArr.push(row);
-                    row = [];
-                }  
+                word = "";
+                this.inputArr.push(row);
+                row = [];
             }
-            else if (cc == sep) {
-                continue
-            }
+            
         }
             
             
